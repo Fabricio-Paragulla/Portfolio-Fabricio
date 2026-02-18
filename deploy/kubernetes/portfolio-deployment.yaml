@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portfolio-deploy
+  namespace: fabricio-portfolio-ns
+  labels:
+    app: portfolio-fabricio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portfolio-fabricio
+  template:
+    metadata:
+      labels:
+        app: portfolio-fabricio
+    spec:
+      containers:
+      - name: portfolio-container
+        image: fabricio07/portfolio-fabricio:v1
+        ports:
+        - containerPort: 80
+        # Inyectamos el ConfigMap como variables de entorno
+        envFrom:
+        - configMapRef:
+            name: portfolio-config
+        # Montamos el Volumen
+        volumeMounts:
+        - mountPath: "/var/log/nginx"
+          name: log-storage
+      # Definimos el origen del volumen (el PVC que creamos antes)
+      volumes:
+      - name: log-storage
+        persistentVolumeClaim:
+          claimName: portfolio-pvc-claim
+      # Usamos el secreto de DockerHub (lo crearemos en el paso de despliegue)
+      imagePullSecrets:
+      - name: regcred

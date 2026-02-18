@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: portfolio-config
+data:
+  # Estas variables estarán disponibles dentro del contenedor
+  VITE_APP_TITLE: "Portfolio - Fabricio Paragulla"
+  ENVIRONMENT: "production"

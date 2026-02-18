@@ -1,0 +1,18 @@
+app:
+  image: 
+    repository: morgadoberruezo/caronte-ms-gateway
+    tag: latest
+    pullPolicy: Always
+  containerPort: 3000
+
+service:
+  type: NodePort      # o ClusterIP si lo expones solo con Ingress
+  port: 3000
+  nodePort: 30080     # opcional si NodePort
+
+ingress:
+  enabled: false
+  className: nginx
+  host: # Url (Dominio) para acceder al API Gateway
+  path: /
+  pathType: Prefix
