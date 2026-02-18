@@ -1,0 +1,54 @@
+pipeline {
+    agent {
+        kubernetes {
+            yaml """
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                  - name: kaniko
+                    image: gcr.io/kaniko-project/executor:debug
+                    command:
+                    - /busybox/cat
+                    tty: true
+                    volumeMounts:
+                    - name: docker-config
+                      mountPath: /kaniko/.docker/
+
+                  volumes:
+                    - name: docker-config
+                      secret:
+                        secretName: dockerhub-secret
+            """
+        }
+    }
+
+    environment {
+        IMAGE = 'fabricio07/portfolio-fabricio:latest'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build and Push Image') {
+            steps {
+                container('kaniko') {
+                    sh """
+                    /kaniko/executor \
+                        --context pwd \
+                        --dockerfile deploy/build_img/Dockerfile \
+                        --destination fabricio07/portfolio-fabricio:${GIT_COMMIT} \
+                        --destination fabricio07/portfolio-fabricio:latest \
+                        --snapshot-mode=redo \
+                        --single-snapshot 
+                    """
+                }
+            }
+        }
+    }
+}
