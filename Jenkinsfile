@@ -14,21 +14,19 @@ pipeline {
                     volumeMounts:
                     - name: docker-config
                       mountPath: /kaniko/.docker/
-
                   volumes:
-                    - name: docker-config
-                      secret:
-                        secretName: dockerhub-secret
+                  - name: docker-config
+                    secret:
+                      secretName: dockerhub-secret
             """
         }
     }
 
     environment {
-        IMAGE = 'fabricio07/portfolio-fabricio:latest'
+        IMAGE_NAME = 'fabricio07/portfolio-fabricio:latest'
     }
 
     stages {
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -40,12 +38,12 @@ pipeline {
                 container('kaniko') {
                     sh """
                     /kaniko/executor \
-                        --context pwd \
+                        --context \$(pwd) \
                         --dockerfile deploy/build_img/Dockerfile \
-                        --destination fabricio07/portfolio-fabricio:${GIT_COMMIT} \
-                        --destination fabricio07/portfolio-fabricio:latest \
+                        --destination \${IMAGE_NAME}:\${GIT_COMMIT} \
+                        --destination \${IMAGE_NAME}:latest \
                         --snapshot-mode=redo \
-                        --single-snapshot 
+                        --single-snapshot
                     """
                 }
             }
