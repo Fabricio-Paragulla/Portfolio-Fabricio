@@ -5,7 +5,7 @@ metadata:
   labels:
     app: portfolio-fabricio
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: portfolio-fabricio
@@ -23,15 +23,6 @@ spec:
         envFrom:
         - configMapRef:
             name: portfolio-config
-        # Montamos el Volumen
-        volumeMounts:
-        - mountPath: "/var/log/nginx"
-          name: log-storage
-      # Definimos el origen del volumen (el PVC que creamos antes)
-      volumes:
-      - name: log-storage
-        persistentVolumeClaim:
-          claimName: portfolio-pvc-claim
       # Usamos el secreto de DockerHub (lo crearemos en el paso de despliegue)
       imagePullSecrets:
       - name: regcred
