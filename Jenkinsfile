@@ -43,8 +43,7 @@ pipeline {
                         --dockerfile deploy/build_img/Dockerfile \
                         --destination \${IMAGE_NAME}:\${GIT_COMMIT} \
                         --destination \${IMAGE_NAME}:latest \
-                        --snapshot-mode=redo \
-                        --single-snapshot
+                        --no-cache --snapshot-mode=redo --single-snapshot \
                     """
                 }
             }
