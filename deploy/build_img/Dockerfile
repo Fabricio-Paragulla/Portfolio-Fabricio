@@ -1,24 +1,18 @@
-# Etapa 1: Build
-FROM node:20-alpine as build-stage
+FROM node:22-alpine AS build-stage
 WORKDIR /app
-
-# Forzamos que no exista carpeta dist previa
-RUN rm -rf dist
-
 COPY package*.json ./
 RUN npm install
-
-# Copiamos el código fuente
 COPY . .
+# Usamos build-only como en tu original
+RUN npm run build-only
 
-# Ejecutamos el build de Vite
-RUN npm run build
+FROM fabricio07/ubnginx:v1
 
-# Etapa 2: Producción
-FROM nginx:stable-alpine as production-stage
+# Limpiamos la ruta que usa tu imagen base personalizada
+RUN rm -rf /var/www/html/*
 
-# IMPORTANTE: Verificamos que copiamos desde la etapa de build
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+# Copiamos la compilación a la ruta correcta para ubnginx
+COPY --from=build-stage /app/dist /var/www/html
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Ajustamos permisos para que el servidor pueda leer los archivos
+RUN chown -R www-data:www-data /var/www/html
