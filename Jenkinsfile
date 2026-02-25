@@ -18,7 +18,7 @@ pipeline {
                   volumes:
                   - name: docker-config
                     secret:
-                      secretName: dockerhub-secret
+                      secretName: portfolio-docker-secret
             """
         }
     }
