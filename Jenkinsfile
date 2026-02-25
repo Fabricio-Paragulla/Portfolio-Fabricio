@@ -23,7 +23,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'fabricio07/portfolio-fabricio:latest'
+        IMAGE_NAME = 'fabricio07/portfolio-fabricio'
     }
 
     stages {
