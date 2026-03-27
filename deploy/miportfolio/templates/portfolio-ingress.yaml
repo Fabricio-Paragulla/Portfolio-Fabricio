@@ -7,7 +7,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: portfoliofabricio.194.163.170.169.nip.io
+  - host: fabricio-portfolio.duckdns.org
     http:
       paths:
       - path: /
